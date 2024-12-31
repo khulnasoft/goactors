@@ -22,7 +22,6 @@ type priceWatcherActor struct {
 }
 
 func (pw *priceWatcherActor) Receive(c *actor.Context) {
-
 	switch msg := c.Message().(type) {
 	case actor.Started:
 		slog.Info("priceWatcher.Started", "ticker", pw.ticker)
@@ -55,7 +54,6 @@ func (pw *priceWatcherActor) Receive(c *actor.Context) {
 }
 
 func (pw *priceWatcherActor) refresh() {
-
 	// check if there are any subscribers
 	if len(pw.subscribers) == 0 {
 		slog.Info("No Subscribers: Killing Price Watcher", "ticker", pw.ticker)

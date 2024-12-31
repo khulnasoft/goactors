@@ -7,11 +7,12 @@
 package remote
 
 import (
+	reflect "reflect"
+	sync "sync"
+
 	actor "github.com/khulnasoft/goactors/actor"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	reflect "reflect"
-	sync "sync"
 )
 
 const (
@@ -258,13 +259,16 @@ func file_remote_proto_rawDescGZIP() []byte {
 	return file_remote_proto_rawDescData
 }
 
-var file_remote_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
-var file_remote_proto_goTypes = []interface{}{
-	(*Envelope)(nil),    // 0: remote.Envelope
-	(*Message)(nil),     // 1: remote.Message
-	(*TestMessage)(nil), // 2: remote.TestMessage
-	(*actor.PID)(nil),   // 3: actor.PID
-}
+var (
+	file_remote_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+	file_remote_proto_goTypes  = []interface{}{
+		(*Envelope)(nil),    // 0: remote.Envelope
+		(*Message)(nil),     // 1: remote.Message
+		(*TestMessage)(nil), // 2: remote.TestMessage
+		(*actor.PID)(nil),   // 3: actor.PID
+	}
+)
+
 var file_remote_proto_depIdxs = []int32{
 	3, // 0: remote.Envelope.targets:type_name -> actor.PID
 	3, // 1: remote.Envelope.senders:type_name -> actor.PID

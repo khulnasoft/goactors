@@ -212,7 +212,6 @@ func lookupPIDs(m map[uint64]int32, pid *actor.PID, pids []*actor.PID) (int32, [
 		pids = append(pids, pid)
 	}
 	return id, pids
-
 }
 
 func lookupTypeName(m map[string]int32, name string, types []string) (int32, []string) {

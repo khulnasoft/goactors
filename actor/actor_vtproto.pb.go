@@ -6,11 +6,12 @@ package actor
 
 import (
 	fmt "fmt"
+	io "io"
+	unsafe "unsafe"
+
 	protohelpers "github.com/planetscale/vtprotobuf/protohelpers"
 	proto "google.golang.org/protobuf/proto"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	io "io"
-	unsafe "unsafe"
 )
 
 const (
@@ -94,6 +95,7 @@ func (this *PID) EqualMessageVT(thatMsg proto.Message) bool {
 	}
 	return this.EqualVT(that)
 }
+
 func (this *Ping) EqualVT(that *Ping) bool {
 	if this == that {
 		return true
@@ -113,6 +115,7 @@ func (this *Ping) EqualMessageVT(thatMsg proto.Message) bool {
 	}
 	return this.EqualVT(that)
 }
+
 func (this *Pong) EqualVT(that *Pong) bool {
 	if this == that {
 		return true
@@ -132,6 +135,7 @@ func (this *Pong) EqualMessageVT(thatMsg proto.Message) bool {
 	}
 	return this.EqualVT(that)
 }
+
 func (m *PID) MarshalVT() (dAtA []byte, err error) {
 	if m == nil {
 		return nil, nil
@@ -559,6 +563,7 @@ func (m *PID) UnmarshalVT(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *Ping) UnmarshalVT(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -646,6 +651,7 @@ func (m *Ping) UnmarshalVT(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *Pong) UnmarshalVT(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -733,6 +739,7 @@ func (m *Pong) UnmarshalVT(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *PID) UnmarshalVTUnsafe(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -856,6 +863,7 @@ func (m *PID) UnmarshalVTUnsafe(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *Ping) UnmarshalVTUnsafe(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -943,6 +951,7 @@ func (m *Ping) UnmarshalVTUnsafe(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *Pong) UnmarshalVTUnsafe(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0

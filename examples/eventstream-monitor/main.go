@@ -24,8 +24,8 @@ type query struct {
 
 func newMonitor() actor.Receiver {
 	return &monitor{}
-
 }
+
 func (m *monitor) Receive(c *actor.Context) {
 	switch c.Message().(type) {
 	case actor.Initialized:
@@ -46,17 +46,19 @@ func (m *monitor) Receive(c *actor.Context) {
 			deadletters: m.deadletters,
 		})
 	}
-
 }
 
-type customMessage struct{}
-type unstableActor struct {
-	spawnTime time.Time
-}
+type (
+	customMessage struct{}
+	unstableActor struct {
+		spawnTime time.Time
+	}
+)
 
 func newUnstableActor() actor.Receiver {
 	return &unstableActor{}
 }
+
 func (m *unstableActor) Receive(c *actor.Context) {
 	switch c.Message().(type) {
 	case actor.Initialized:

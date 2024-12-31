@@ -74,7 +74,6 @@ func (te *tradeExecutorActor) Receive(c *actor.Context) {
 }
 
 func (te *tradeExecutorActor) processUpdate(update types.PriceUpdate) {
-
 	// if expires is set and is less than current time, cancel the order
 	if !te.expires.IsZero() && time.Now().After(te.expires) {
 		slog.Info("Trade Expired", "id", te.id, "wallet", te.wallet)

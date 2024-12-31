@@ -11,6 +11,8 @@ type poisonPill struct {
 	wg       *sync.WaitGroup
 	graceful bool
 }
-type Initialized struct{}
-type Started struct{}
-type Stopped struct{}
+type (
+	Initialized struct{}
+	Started     struct{}
+	Stopped     struct{}
+)

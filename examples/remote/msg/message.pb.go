@@ -7,10 +7,11 @@
 package msg
 
 import (
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
+
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (
@@ -93,10 +94,13 @@ func file_examples_remote_msg_message_proto_rawDescGZIP() []byte {
 	return file_examples_remote_msg_message_proto_rawDescData
 }
 
-var file_examples_remote_msg_message_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
-var file_examples_remote_msg_message_proto_goTypes = []interface{}{
-	(*Message)(nil), // 0: msg.Message
-}
+var (
+	file_examples_remote_msg_message_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+	file_examples_remote_msg_message_proto_goTypes  = []interface{}{
+		(*Message)(nil), // 0: msg.Message
+	}
+)
+
 var file_examples_remote_msg_message_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
 	0, // [0:0] is the sub-list for method input_type

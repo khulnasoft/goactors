@@ -7,8 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type fooProc struct {
-}
+type fooProc struct{}
 
 func (p fooProc) Start()                   {}
 func (p fooProc) PID() *PID                { return NewPID(LocalLookupAddr, "foo") }

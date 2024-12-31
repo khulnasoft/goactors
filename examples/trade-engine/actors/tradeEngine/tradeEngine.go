@@ -12,8 +12,7 @@ import (
 )
 
 // tradeEngineActor is the main actor for the trade engine
-type tradeEngineActor struct {
-}
+type tradeEngineActor struct{}
 
 // TradeOrderRequest is the message sent to the trade engine to create a new trade order
 
@@ -126,7 +125,6 @@ func (t *tradeEngineActor) handleTradeInfoRequest(msg types.TradeInfoRequest, c 
 	default:
 		slog.Error("Failed to get trade info", "err", "unknown response type")
 	}
-
 }
 
 func NewTradeEngine() actor.Producer {

@@ -1,11 +1,12 @@
 package chat
 
 import (
+	"log/slog"
+	"reflect"
+
 	"github.com/khulnasoft/goactors/actor"
 	"github.com/khulnasoft/goactors/examples/mdns/chat/types"
 	"github.com/khulnasoft/goactors/examples/mdns/discovery"
-	"log/slog"
-	"reflect"
 )
 
 type server struct {

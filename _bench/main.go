@@ -17,8 +17,7 @@ import (
 
 //go:generate protoc --proto_path=. --go_out=. --go_opt=paths=source_relative message.proto
 
-type monitor struct {
-}
+type monitor struct{}
 
 func (m *monitor) Receive(ctx *actor.Context) {
 	switch ctx.Message().(type) {
@@ -28,6 +27,7 @@ func (m *monitor) Receive(ctx *actor.Context) {
 		deadLetters.Add(1)
 	}
 }
+
 func newMonitor() actor.Receiver {
 	return &monitor{}
 }
@@ -84,6 +84,7 @@ type Engine struct {
 func (e *Engine) randomActor() *actor.PID {
 	return e.actors[rand.Intn(len(e.actors))]
 }
+
 func (e *Engine) randomTargetEngine() *Engine {
 	return e.targetEngines[rand.Intn(len(e.targetEngines))]
 }
@@ -97,6 +98,7 @@ func newBenchmark(engineCount, actorsPerEngine, senders int) *Benchmark {
 	}
 	return b
 }
+
 func (b *Benchmark) spawnEngines() error {
 	for i := 0; i < b.engineCount; i++ {
 		r := remote.New(fmt.Sprintf("localhost:%d", 4000+i), remote.NewConfig())
@@ -136,6 +138,7 @@ func (b *Benchmark) spawnActors() error {
 	fmt.Printf("spawned %d actors per engine\n", b.actorsPerEngine)
 	return nil
 }
+
 func (b *Benchmark) sendMessages(d time.Duration) error {
 	wg := sync.WaitGroup{}
 	wg.Add(b.senders)
@@ -221,5 +224,4 @@ func main() {
 		slog.Error("failed to run benchmark", "err", err)
 		os.Exit(1)
 	}
-
 }

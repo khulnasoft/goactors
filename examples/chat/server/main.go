@@ -9,8 +9,10 @@ import (
 	"github.com/khulnasoft/goactors/remote"
 )
 
-type clientMap map[string]*actor.PID
-type userMap map[string]string
+type (
+	clientMap map[string]*actor.PID
+	userMap   map[string]string
+)
 
 type server struct {
 	clients clientMap // key: address value: *pid
@@ -77,9 +79,7 @@ func (s *server) handleMessage(ctx *actor.Context) {
 }
 
 func main() {
-	var (
-		listenAt = flag.String("listen", "127.0.0.1:4000", "")
-	)
+	listenAt := flag.String("listen", "127.0.0.1:4000", "")
 	flag.Parse()
 	rem := remote.New(*listenAt, remote.NewConfig())
 	e, err := actor.NewEngine(actor.NewEngineConfig().WithRemote(rem))

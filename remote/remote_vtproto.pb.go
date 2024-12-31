@@ -7,14 +7,15 @@ package remote
 import (
 	context "context"
 	fmt "fmt"
+	io "io"
+	bits "math/bits"
+
 	actor "github.com/khulnasoft/goactors/actor"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
 	proto "google.golang.org/protobuf/proto"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	io "io"
-	bits "math/bits"
 )
 
 const (
@@ -204,6 +205,7 @@ func (this *Envelope) EqualMessageVT(thatMsg proto.Message) bool {
 	}
 	return this.EqualVT(that)
 }
+
 func (this *Message) EqualVT(that *Message) bool {
 	if this == that {
 		return true
@@ -232,6 +234,7 @@ func (this *Message) EqualMessageVT(thatMsg proto.Message) bool {
 	}
 	return this.EqualVT(that)
 }
+
 func (this *TestMessage) EqualVT(that *TestMessage) bool {
 	if this == that {
 		return true
@@ -312,8 +315,7 @@ type RemoteServer interface {
 }
 
 // UnimplementedRemoteServer must be embedded to have forward compatible implementations.
-type UnimplementedRemoteServer struct {
-}
+type UnimplementedRemoteServer struct{}
 
 func (UnimplementedRemoteServer) Receive(Remote_ReceiveServer) error {
 	return status.Errorf(codes.Unimplemented, "method Receive not implemented")
@@ -583,6 +585,7 @@ func encodeVarint(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+
 func (m *Envelope) MarshalVTStrict() (dAtA []byte, err error) {
 	if m == nil {
 		return nil, nil
@@ -866,9 +869,11 @@ func (m *TestMessage) SizeVT() (n int) {
 func sov(x uint64) (n int) {
 	return (bits.Len64(x|1) + 6) / 7
 }
+
 func soz(x uint64) (n int) {
 	return sov(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
+
 func (m *Envelope) UnmarshalVT(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1070,6 +1075,7 @@ func (m *Envelope) UnmarshalVT(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *Message) UnmarshalVT(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1212,6 +1218,7 @@ func (m *Message) UnmarshalVT(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *TestMessage) UnmarshalVT(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0

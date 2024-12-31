@@ -7,10 +7,11 @@
 package main
 
 import (
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
+
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (
@@ -188,12 +189,15 @@ func file_message_proto_rawDescGZIP() []byte {
 	return file_message_proto_rawDescData
 }
 
-var file_message_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
-var file_message_proto_goTypes = []interface{}{
-	(*Message)(nil), // 0: main.Message
-	(*Ping)(nil),    // 1: main.Ping
-	(*Pong)(nil),    // 2: main.Pong
-}
+var (
+	file_message_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+	file_message_proto_goTypes  = []interface{}{
+		(*Message)(nil), // 0: main.Message
+		(*Ping)(nil),    // 1: main.Ping
+		(*Pong)(nil),    // 2: main.Pong
+	}
+)
+
 var file_message_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
 	0, // [0:0] is the sub-list for method input_type

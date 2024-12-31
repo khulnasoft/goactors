@@ -10,8 +10,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/khulnasoft/goactors/actor"
 	"github.com/grandcat/zeroconf"
+	"github.com/khulnasoft/goactors/actor"
 )
 
 const (

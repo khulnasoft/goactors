@@ -1,8 +1,9 @@
 package types
 
 import (
-	"github.com/khulnasoft/goactors/actor"
 	"time"
+
+	"github.com/khulnasoft/goactors/actor"
 )
 
 // message to cancel a trade

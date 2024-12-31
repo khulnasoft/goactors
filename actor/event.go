@@ -59,8 +59,10 @@ type ActorRestartedEvent struct {
 
 func (e ActorRestartedEvent) Log() (slog.Level, string, []any) {
 	return slog.LevelError, "Actor crashed and restarted",
-		[]any{"pid", e.PID.GetID(), "stack", string(e.Stacktrace),
-			"reason", e.Reason, "restarts", e.Restarts}
+		[]any{
+			"pid", e.PID.GetID(), "stack", string(e.Stacktrace),
+			"reason", e.Reason, "restarts", e.Restarts,
+		}
 }
 
 // ActorMaxRestartsExceededEvent gets created if an actor crashes too many times

@@ -32,7 +32,6 @@ type info struct {
 }
 
 func main() {
-
 	var ds []*info
 	ds = append(ds, &info{data: "hello"})
 

@@ -20,7 +20,6 @@ type nameResponder struct {
 }
 
 func newNameResponder() actor.Receiver {
-
 	return &nameResponder{name: "noname"}
 }
 

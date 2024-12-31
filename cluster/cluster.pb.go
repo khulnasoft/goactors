@@ -7,11 +7,12 @@
 package cluster
 
 import (
+	reflect "reflect"
+	sync "sync"
+
 	actor "github.com/khulnasoft/goactors/actor"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	reflect "reflect"
-	sync "sync"
 )
 
 const (
@@ -840,23 +841,26 @@ func file_cluster_proto_rawDescGZIP() []byte {
 	return file_cluster_proto_rawDescData
 }
 
-var file_cluster_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
-var file_cluster_proto_goTypes = []interface{}{
-	(*CID)(nil),                // 0: cluster.CID
-	(*Member)(nil),             // 1: cluster.Member
-	(*Members)(nil),            // 2: cluster.Members
-	(*MembersJoin)(nil),        // 3: cluster.MembersJoin
-	(*MembersLeave)(nil),       // 4: cluster.MembersLeave
-	(*Handshake)(nil),          // 5: cluster.Handshake
-	(*Topology)(nil),           // 6: cluster.Topology
-	(*ActorInfo)(nil),          // 7: cluster.ActorInfo
-	(*ActorTopology)(nil),      // 8: cluster.ActorTopology
-	(*Activation)(nil),         // 9: cluster.Activation
-	(*Deactivation)(nil),       // 10: cluster.Deactivation
-	(*ActivationRequest)(nil),  // 11: cluster.ActivationRequest
-	(*ActivationResponse)(nil), // 12: cluster.ActivationResponse
-	(*actor.PID)(nil),          // 13: actor.PID
-}
+var (
+	file_cluster_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+	file_cluster_proto_goTypes  = []interface{}{
+		(*CID)(nil),                // 0: cluster.CID
+		(*Member)(nil),             // 1: cluster.Member
+		(*Members)(nil),            // 2: cluster.Members
+		(*MembersJoin)(nil),        // 3: cluster.MembersJoin
+		(*MembersLeave)(nil),       // 4: cluster.MembersLeave
+		(*Handshake)(nil),          // 5: cluster.Handshake
+		(*Topology)(nil),           // 6: cluster.Topology
+		(*ActorInfo)(nil),          // 7: cluster.ActorInfo
+		(*ActorTopology)(nil),      // 8: cluster.ActorTopology
+		(*Activation)(nil),         // 9: cluster.Activation
+		(*Deactivation)(nil),       // 10: cluster.Deactivation
+		(*ActivationRequest)(nil),  // 11: cluster.ActivationRequest
+		(*ActivationResponse)(nil), // 12: cluster.ActivationResponse
+		(*actor.PID)(nil),          // 13: actor.PID
+	}
+)
+
 var file_cluster_proto_depIdxs = []int32{
 	13, // 0: cluster.CID.PID:type_name -> actor.PID
 	1,  // 1: cluster.Members.members:type_name -> cluster.Member

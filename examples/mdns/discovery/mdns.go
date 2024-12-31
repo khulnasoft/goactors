@@ -6,8 +6,8 @@ import (
 	"log/slog"
 	"strings"
 
-	"github.com/khulnasoft/goactors/actor"
 	"github.com/grandcat/zeroconf"
+	"github.com/khulnasoft/goactors/actor"
 )
 
 type mdns struct {
