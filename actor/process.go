@@ -35,6 +35,7 @@ type process struct {
 	mbuffer  []Envelope
 }
 
+// newProcess creates a new process instance.
 func newProcess(e *Engine, opts Opts) *process {
 	pid := NewPID(e.address, opts.Kind+pidSeparator+opts.ID)
 	ctx := newContext(opts.Context, e, pid)
@@ -48,6 +49,7 @@ func newProcess(e *Engine, opts Opts) *process {
 	return p
 }
 
+// applyMiddleware applies middleware functions to the receive function.
 func applyMiddleware(rcv ReceiveFunc, middleware ...MiddlewareFunc) ReceiveFunc {
 	for i := len(middleware) - 1; i >= 0; i-- {
 		rcv = middleware[i](rcv)
@@ -55,20 +57,14 @@ func applyMiddleware(rcv ReceiveFunc, middleware ...MiddlewareFunc) ReceiveFunc 
 	return rcv
 }
 
+// Invoke processes a batch of messages.
 func (p *process) Invoke(msgs []Envelope) {
 	var (
-		// numbers of msgs that need to be processed.
-		nmsg = len(msgs)
-		// numbers of msgs that are processed.
-		nproc = 0
-		// FIXME: We could use nrpoc here, but for some reason placing nproc++ on the
-		// bottom of the function it freezes some tests. Hence, I created a new counter
-		// for bookkeeping.
-		processed = 0
+		nmsg     = len(msgs) // number of messages to be processed
+		nproc    = 0         // number of messages processed
+		processed = 0        // number of messages processed (for bookkeeping)
 	)
 	defer func() {
-		// If we recovered, we buffer up all the messages that we could not process
-		// so we can retry them on the next restart.
 		if v := recover(); v != nil {
 			p.context.message = Stopped{}
 			p.context.receiver.Receive(p.context)
@@ -84,8 +80,6 @@ func (p *process) Invoke(msgs []Envelope) {
 		nproc++
 		msg := msgs[i]
 		if pill, ok := msg.Msg.(poisonPill); ok {
-			// If we need to gracefuly stop, we process all the messages
-			// from the inbox, otherwise we ignore and cleanup.
 			if pill.graceful {
 				msgsToProcess := msgs[processed:]
 				for _, m := range msgsToProcess {
@@ -100,8 +94,8 @@ func (p *process) Invoke(msgs []Envelope) {
 	}
 }
 
+// invokeMsg processes a single message.
 func (p *process) invokeMsg(msg Envelope) {
-	// suppress poison pill messages here. they're private to the actor engine.
 	if _, ok := msg.Msg.(poisonPill); ok {
 		return
 	}
@@ -115,6 +109,7 @@ func (p *process) invokeMsg(msg Envelope) {
 	}
 }
 
+// Start starts the process.
 func (p *process) Start() {
 	recv := p.Producer()
 	p.context.receiver = recv
@@ -132,7 +127,6 @@ func (p *process) Start() {
 	p.context.message = Started{}
 	applyMiddleware(recv.Receive, p.Opts.Middleware...)(p.context)
 	p.context.engine.BroadcastEvent(ActorStartedEvent{PID: p.pid, Timestamp: time.Now()})
-	// If we have messages in our buffer, invoke them.
 	if len(p.mbuffer) > 0 {
 		p.Invoke(p.mbuffer)
 		p.mbuffer = nil
@@ -141,12 +135,8 @@ func (p *process) Start() {
 	p.inbox.Start(p)
 }
 
+// tryRestart attempts to restart the process after a failure.
 func (p *process) tryRestart(v any) {
-	// InternalError does not take the maximum restarts into account.
-	// For now, InternalError is getting triggered when we are dialing
-	// a remote node. By doing this, we can keep dialing until it comes
-	// back up. NOTE: not sure if that is the best option. What if that
-	// node never comes back up again?
 	if msg, ok := v.(*InternalError); ok {
 		slog.Error(msg.From, "err", msg.Err)
 		time.Sleep(p.Opts.RestartDelay)
@@ -154,8 +144,6 @@ func (p *process) tryRestart(v any) {
 		return
 	}
 	stackTrace := cleanTrace(debug.Stack())
-	// If we reach the max restarts, we shutdown the inbox and clean
-	// everything up.
 	if p.restarts == p.MaxRestarts {
 		p.context.engine.BroadcastEvent(ActorMaxRestartsExceededEvent{
 			PID:       p.pid,
@@ -166,7 +154,6 @@ func (p *process) tryRestart(v any) {
 	}
 
 	p.restarts++
-	// Restart the process after its restartDelay
 	p.context.engine.BroadcastEvent(ActorRestartedEvent{
 		PID:        p.pid,
 		Timestamp:  time.Now(),
@@ -178,6 +165,7 @@ func (p *process) tryRestart(v any) {
 	p.Start()
 }
 
+// cleanup cleans up the process and its resources.
 func (p *process) cleanup(wg *sync.WaitGroup) {
 	if p.context.parentCtx != nil {
 		p.context.parentCtx.children.Delete(p.pid.ID)
@@ -201,12 +189,18 @@ func (p *process) cleanup(wg *sync.WaitGroup) {
 	}
 }
 
+// PID returns the PID of the process.
 func (p *process) PID() *PID { return p.pid }
+
+// Send sends a message to the process.
 func (p *process) Send(_ *PID, msg any, sender *PID) {
 	p.inbox.Send(Envelope{Msg: msg, Sender: sender})
 }
+
+// Shutdown shuts down the process.
 func (p *process) Shutdown(wg *sync.WaitGroup) { p.cleanup(wg) }
 
+// cleanTrace cleans up the stack trace for better readability.
 func cleanTrace(stack []byte) []byte {
 	goros, err := gostackparse.Parse(bytes.NewReader(stack))
 	if err != nil {
@@ -217,7 +211,6 @@ func cleanTrace(stack []byte) []byte {
 		slog.Error("expected only one goroutine", "goroutines", len(goros))
 		return stack
 	}
-	// skip the first frames:
 	goros[0].Stack = goros[0].Stack[4:]
 	buf := bytes.NewBuffer(nil)
 	_, _ = fmt.Fprintf(buf, "goroutine %d [%s]\n", goros[0].ID, goros[0].State)

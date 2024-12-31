@@ -11,6 +11,7 @@ import (
 	"github.com/khulnasoft/goactors/safemap"
 )
 
+// Context represents the context of an actor, containing information about the actor's state, its children, and its parent.
 type Context struct {
 	pid      *PID
 	sender   *PID
@@ -25,6 +26,7 @@ type Context struct {
 	context   context.Context
 }
 
+// newContext creates a new Context instance.
 func newContext(ctx context.Context, e *Engine, pid *PID) *Context {
 	return &Context{
 		context:  ctx,
@@ -45,13 +47,12 @@ func (c *Context) Receiver() Receiver {
 	return c.receiver
 }
 
-// See Engine.Request for information. This is just a helper function doing that
-// calls Request on the underlying Engine. c.Engine().Request().
+// Request sends a request to the given PID with a specified timeout and returns a Response.
 func (c *Context) Request(pid *PID, msg any, timeout time.Duration) *Response {
 	return c.engine.Request(pid, msg, timeout)
 }
 
-// Respond will sent the given message to the sender of the current received message.
+// Respond sends the given message to the sender of the current received message.
 func (c *Context) Respond(msg any) {
 	if c.sender == nil {
 		slog.Warn("context got no sender", "func", "Respond", "pid", c.PID())
@@ -60,9 +61,7 @@ func (c *Context) Respond(msg any) {
 	c.engine.Send(c.sender, msg)
 }
 
-// SpawnChild will spawn the given Producer as a child of the current Context.
-// If the parent process dies, all the children will be automatically shutdown gracefully.
-// Hence, all children will receive the Stopped message.
+// SpawnChild spawns a child actor with the given Producer and name, and returns its PID.
 func (c *Context) SpawnChild(p Producer, name string, opts ...OptFunc) *PID {
 	options := DefaultOpts(p)
 	options.Kind = c.PID().ID + pidSeparator + name
@@ -82,23 +81,17 @@ func (c *Context) SpawnChild(p Producer, name string, opts ...OptFunc) *PID {
 	return proc.PID()
 }
 
-// SpawnChildFunc spawns the given function as a child Receiver of the current
-// Context.
+// SpawnChildFunc spawns a child actor with the given function and name, and returns its PID.
 func (c *Context) SpawnChildFunc(f func(*Context), name string, opts ...OptFunc) *PID {
 	return c.SpawnChild(newFuncReceiver(f), name, opts...)
 }
 
-// Send will send the given message to the given PID.
-// This will also set the sender of the message to
-// the PID of the current Context. Hence, the receiver
-// of the message can call Context.Sender() to know
-// the PID of the process that sent this message.
+// Send sends the given message to the specified PID, setting the sender to the current Context's PID.
 func (c *Context) Send(pid *PID, msg any) {
 	c.engine.SendWithSender(pid, msg, c.pid)
 }
 
-// SendRepeat will send the given message to the given PID each given interval.
-// It will return a SendRepeater struct that can stop the repeating message by calling Stop().
+// SendRepeat sends the given message to the specified PID at the specified interval, and returns a SendRepeater.
 func (c *Context) SendRepeat(pid *PID, msg any, interval time.Duration) SendRepeater {
 	sr := SendRepeater{
 		engine:   c.engine,
@@ -112,14 +105,12 @@ func (c *Context) SendRepeat(pid *PID, msg any, interval time.Duration) SendRepe
 	return sr
 }
 
-// Forward will forward the current received message to the given PID.
-// This will also set the "forwarder" as the sender of the message.
+// Forward forwards the current received message to the specified PID, setting the sender to the current Context's PID.
 func (c *Context) Forward(pid *PID) {
 	c.engine.SendWithSender(pid, c.message, c.pid)
 }
 
-// GetPID returns the PID of the process found by the given id.
-// Returns nil when it could not find any process..
+// GetPID returns the PID of the process found by the given id, or nil if not found.
 func (c *Context) GetPID(id string) *PID {
 	proc := c.engine.Registry.getByID(id)
 	if proc != nil {
@@ -128,7 +119,7 @@ func (c *Context) GetPID(id string) *PID {
 	return nil
 }
 
-// Parent returns the PID of the process that spawned the current process.
+// Parent returns the PID of the parent process, or nil if there is no parent.
 func (c *Context) Parent() *PID {
 	if c.parentCtx != nil {
 		return c.parentCtx.pid
@@ -136,14 +127,13 @@ func (c *Context) Parent() *PID {
 	return nil
 }
 
-// Child will return the PID of the child (if any) by the given name/id.
-// PID will be nil if it could not find it.
+// Child returns the PID of the child process with the given id, or nil if not found.
 func (c *Context) Child(id string) *PID {
 	pid, _ := c.children.Get(id)
 	return pid
 }
 
-// Children returns all child PIDs for the current process.
+// Children returns a slice of PIDs of all child processes.
 func (c *Context) Children() []*PID {
 	pids := make([]*PID, c.children.Len())
 	i := 0
@@ -154,23 +144,22 @@ func (c *Context) Children() []*PID {
 	return pids
 }
 
-// PID returns the PID of the process that belongs to the context.
+// PID returns the PID of the current process.
 func (c *Context) PID() *PID {
 	return c.pid
 }
 
-// Sender, when available, returns the PID of the process that sent the
-// current received message.
+// Sender returns the PID of the sender of the current received message, or nil if there is no sender.
 func (c *Context) Sender() *PID {
 	return c.sender
 }
 
-// Engine returns a pointer to the underlying Engine.
+// Engine returns the underlying Engine.
 func (c *Context) Engine() *Engine {
 	return c.engine
 }
 
-// Message returns the message that is currently being received.
+// Message returns the current received message.
 func (c *Context) Message() any {
 	return c.message
 }
